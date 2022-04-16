@@ -1,100 +1,77 @@
-const contactRepository = require('../../repository/contacts');
-const HTTP_STATUS_CODES = require('../../libs/constants');
+const { HTTP_STATUS_CODES } = require('../../libs/constants')
+const contactsService = require('../../services/contacts')
 
-const getContacts = async(req, res, next) => {
-    const contacts = await contactRepository.getContacts();
-    res.json({ status: 'success', code: HTTP_STATUS_CODES.OK, payload: { contacts } });
+const getContacts = async (req, res) => {
+	const contacts = await contactsService.getAll(req.query, req.user)
+	res.json({
+		status: 'success',
+		code: HTTP_STATUS_CODES.OK,
+		payload: { contacts }
+	})
 }
 
-const getContactById = async(req, res, next) => {
-    const contact = await contactRepository.getContactById(req.params.contactId);
-    if (contact) {
-        res.json({
-            status: 'success',
-            code: HTTP_STATUS_CODES.OK,
-            payload: { contact }
-        });
-    } else {
-        res.json({
-            status: 'fail',
-            code: HTTP_STATUS_CODES.NOT_FOUND,
-            payload: { message: 'Contact not found' }
-        });
-    }
+const getContactById = async (req, res) => {
+	const contact = await contactsService.getByid(
+		req.params.contactId,
+		req.user
+	)
+	res.json({
+		status: 'success',
+		code: HTTP_STATUS_CODES.OK,
+		payload: { contact }
+	})
 }
 
-const createContact = async(req, res, next) => {
-    const contact = await contactRepository.createContact(req.body);
-    res.status(HTTP_STATUS_CODES.CREATED).json({
-        status: 'success',
-        code: HTTP_STATUS_CODES.CREATED,
-        payload: { contact }
-    });
+const createContact = async (req, res) => {
+	const contact = await contactsService.create(req.body, req.user)
+	res.status(HTTP_STATUS_CODES.CREATED).json({
+		status: 'success',
+		code: HTTP_STATUS_CODES.CREATED,
+		payload: { contact }
+	})
 }
 
-const deleteContact = async(req, res, next) => {
-    try {
-        const contact = await contactRepository.deleteContact(req.params.contactId);
-        if (contact) {
-            res.json({
-                status: 'success',
-                code: HTTP_STATUS_CODES.NO_CONTENT,
-                payload: { message: 'Contact deleted' }
-            });
-        } else {
-            res.json({
-                status: 'fail',
-                code: HTTP_STATUS_CODES.NOT_FOUND,
-                payload: { message: 'Contact not found' }
-            });
-        }
+const deleteContact = async (req, res) => {
+	const contact = await contactsService.delete(req.params.contactId, req.user)
 
-    } catch (err) {
-        next(err);
-    }
+	res.json({
+		status: 'success',
+		code: HTTP_STATUS_CODES.NO_CONTENT,
+		payload: { message: 'Contact deleted' }
+	})
 }
 
-const updateContact = async(req, res, next) => {
-    const contact = await contactRepository.updateContact(req.params.contactId, req.body);
-    if (contact) {
-        res.json({
-            status: 'success',
-            code: HTTP_STATUS_CODES.OK,
-            payload: { contact }
-        });
-    } else {
-        res.json({
-            status: 'fail',
-            code: HTTP_STATUS_CODES.NOT_FOUND,
-            payload: { message: 'Contact not found' }
-        });
-    }
-
+const updateContact = async (req, res) => {
+	const contact = await contactsService.update(
+		req.params.contactId,
+		req.body,
+		req.user
+	)
+	res.json({
+		status: 'success',
+		code: HTTP_STATUS_CODES.OK,
+		payload: { contact }
+	})
 }
 
-const updateFavorite = async(req, res, next) => {
-    const contact = await contactRepository.updateFavorite(req.params.contactId, req.body);
-    if (contact) {
-        res.json({
-            status: 'success',
-            code: HTTP_STATUS_CODES.OK,
-            payload: { contact }
-        });
-    } else {
-        res.json({
-            status: 'fail',
-            code: HTTP_STATUS_CODES.NOT_FOUND,
-            payload: { message: 'Contact not found' }
-        });
-    }
-
+const updateFavorite = async (req, res, next) => {
+	const contact = await contactsService.updateFavorite(
+		req.params.contactId,
+		req.body,
+		req.user
+	)
+	res.json({
+		status: 'success',
+		code: HTTP_STATUS_CODES.OK,
+		payload: { contact }
+	})
 }
 
 module.exports = {
-    getContacts,
-    getContactById,
-    createContact,
-    deleteContact,
-    updateContact,
-    updateFavorite
+	getContacts,
+	getContactById,
+	createContact,
+	deleteContact,
+	updateContact,
+	updateFavorite
 }
