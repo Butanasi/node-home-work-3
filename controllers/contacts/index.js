@@ -6,7 +6,7 @@ const getContacts = async (req, res) => {
 	res.json({
 		status: 'success',
 		code: HTTP_STATUS_CODES.OK,
-		payload: { contacts }
+		payload: { ...contacts }
 	})
 }
 
