@@ -1,12 +1,19 @@
 const Contact = require('../models/contact')
 
-const getContacts = async (query, user) => {
-	const result = await Contact.find({ owner: user.id })
-	return result
+const getContacts = async ({ limit, skip, sortCriteria, select }, user) => {
+	const { docs: contacts, ...rest } = await Contact.paginate(
+		{ owner: user.id },
+		{ limit, offset: skip, sort: sortCriteria, select }
+	)
+	return { contacts, ...rest }
 }
 
 const getContactById = async (contactId, user) => {
 	const result = await Contact.findOne({ _id: contactId, owner: user.id })
+		.populate({
+			path: 'owner',
+			select: 'email subscription'
+		})
 	return result
 }
 

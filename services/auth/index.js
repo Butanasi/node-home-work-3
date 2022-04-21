@@ -17,7 +17,8 @@ class AuthService {
 		return {
 			id: newUser.id,
 			email: newUser.email,
-			subscription: newUser.subscription
+			subscription: newUser.subscription,
+			avatarUrl: newUser.avatarUrl
 		}
 	}
 
