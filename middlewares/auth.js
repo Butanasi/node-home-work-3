@@ -27,7 +27,7 @@ const auth = async (req, res, next) => {
 		next()
 	} catch (error) {
 		if ((error.message = 'invalid signature')) {
-			error.staus = HTTP_STATUS_CODES.UNAUTHORIZED
+			error.status = HTTP_STATUS_CODES.UNAUTHORIZED
 		}
 		throw error
 	}
